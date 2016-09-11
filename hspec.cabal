@@ -13,7 +13,7 @@ library
                      , network-transport-tcp
   default-language:    Haskell2010
 
-executable hspec-exe
+executable messagePass
   hs-source-dirs:      app
   main-is:             Main.hs
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
