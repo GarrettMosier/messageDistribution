@@ -49,10 +49,6 @@ bigFunc = do
     liftIO $ threadDelay 2000000
 
 
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
-
-
 suma :: (Num a, Enum a) => [a] -> a 
 suma = weightedAverage [1..] 
 
