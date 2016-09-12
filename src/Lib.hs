@@ -33,11 +33,25 @@ bigFunc = do
     -- By default, this process simply loops through its mailbox and sends
     -- any received log message strings it finds to stderr.
 
+
+{-
     say "send some messages!"
     send echoPid "hello"
+
+
     self <- getSelfPid
     send echoPid (self, "hello")
+-}
 
+    self <- getSelfPid
+    send self (100 :: Int)
+    send self (20 :: Int)
+    sup <- expect :: Process Int
+    yo <- expect :: Process Int
+    liftIO $ print $ suma [sup, yo]
+
+
+{-
     -- `expectTimeout` waits for a message or times out after "delay"
     m <- expectTimeout 1000000
     case m of
@@ -47,7 +61,7 @@ bigFunc = do
 
     -- Without the following delay, the process sometimes exits before the messages are exchanged.
     liftIO $ threadDelay 2000000
-
+-}
 
 suma :: (Num a, Enum a) => [a] -> a 
 suma = weightedAverage [1..] 
