@@ -42,7 +42,7 @@ sendMessages messages recipient = mapM_ (send recipient) messages
 bigFunc :: TimeToSendMessages -> GracePeriod -> Seed -> IO ()
 bigFunc timeToSendMessages  _ seed = do
   let messagesToSendOutForever = randomStream seed :: Messages
-   
+
   Right t <- createTransport "127.0.0.1" "10501" defaultTCPParameters
   node <- newLocalNode t initRemoteTable
   runProcess node $ do
