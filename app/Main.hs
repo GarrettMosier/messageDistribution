@@ -14,6 +14,11 @@ commandLineParser = CommandLineRequest <$>
     strOption (long "with-seed" <> metavar "SEED" <> help "The seed to be used in the random message generation") 
     
 
+options = info (helper <*> commandLineParser)
+    ( fullDesc 
+        <> progDesc "Send messages to all nodes in a cluster"
+        <> header "MessagePass - A message passing program")
+
 
 main :: IO ()
 main = bigFunc 1 1 1
