@@ -24,14 +24,24 @@ logMessage msg = say $ "handling " ++ msg
 type TimeToSendMessages = Int
 type GracePeriod = Int
 type Seed = Int
+type Messages = [Float]
 
 randomStream :: Seed -> [Float]
-randomStream seed = randomRs (0 :: Float, 1) $ mkStdGen seed
+randomStream = randomRs (0 :: Float, 1) . mkStdGen 
+
+
+
+--sendMessagesForever :: [Float] -> IO ()
+sendMessagesForever messages recipient = spawnLocal $ sendMessages messages recipient
+
+sendMessages :: [Float] -> ProcessId -> Process ()
+sendMessages messages recipient = mapM_ (send recipient) messages 
 
 
 bigFunc :: TimeToSendMessages -> GracePeriod -> Seed -> IO ()
 bigFunc _ _ seed = do
-  let messagesToSendOutForever = randomStream seed
+  let messagesToSendOutForever = randomStream seed :: Messages
+   
   Right t <- createTransport "127.0.0.1" "10501" defaultTCPParameters
   node <- newLocalNode t initRemoteTable
   runProcess node $ do
@@ -40,21 +50,13 @@ bigFunc _ _ seed = do
       -- Test our matches in order against each message in the queue
       receiveWait [match logMessage, match replyBack]
 
-    -- The `say` function sends a message to a process registered as "logger".
-    -- By default, this process simply loops through its mailbox and sends
-    -- any received log message strings it finds to stderr.
-
-
-{-
-    say "send some messages!"
-    send echoPid "hello"
-
-
     self <- getSelfPid
-    send echoPid (self, "hello")
--}
 
-    self <- getSelfPid
+    spamMessagesPid <- sendMessagesForever messagesToSendOutForever self
+
+
+
+
     send self (100 :: Int)
     send self (20 :: Int)
     sup <- expect :: Process Int
