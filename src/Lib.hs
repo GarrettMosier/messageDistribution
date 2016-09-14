@@ -28,9 +28,9 @@ type Seed = Int
 type Messages = [Float]
 
 
-data CommandLineRequest = CommandLineRequest { durationToSendMessages :: Int, gracePeriod :: Int, seed :: Int}
+data CommandLineRequest = CommandLineRequest { durationToSendMessages :: TimeToSendMessages, gracePeriod :: GracePeriod, seed :: Seed}
 
-randomStream :: Seed -> [Float]
+randomStream :: Seed -> Messages
 randomStream = randomRs (0 :: Float, 1) . mkStdGen 
 
 
@@ -38,7 +38,7 @@ randomStream = randomRs (0 :: Float, 1) . mkStdGen
 --sendMessagesForever :: [Float] -> IO ()
 sendMessagesForever messages recipient = spawnLocal $ sendMessages messages recipient
 
-sendMessages :: [Float] -> ProcessId -> Process ()
+sendMessages :: Messages -> ProcessId -> Process ()
 sendMessages messages recipient = mapM_ (send recipient) messages 
 
 
