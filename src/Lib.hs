@@ -19,8 +19,12 @@ logMessage :: String -> Process ()
 logMessage msg = say $ "handling " ++ msg
 
 
-bigFunc :: IO ()
-bigFunc = do
+type TimeToSendMessages = Int
+type GracePeriod = Int
+type Seed = Int
+
+bigFunc :: TimeToSendMessages -> GracePeriod -> Seed -> IO ()
+bigFunc _ _ _ = do
   Right t <- createTransport "127.0.0.1" "10501" defaultTCPParameters
   node <- newLocalNode t initRemoteTable
   runProcess node $ do
