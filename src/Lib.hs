@@ -11,7 +11,8 @@ import Control.Monad (forever)
 import Control.Distributed.Process
 import Control.Distributed.Process.Node
 import Network.Transport.TCP (createTransport, defaultTCPParameters)
-
+import Control.Distributed.Process.Extras.Time
+import Control.Distributed.Process.Extras.Timer
 import System.Random
 
 replyBack :: (ProcessId, String) -> Process ()
@@ -39,7 +40,7 @@ sendMessages messages recipient = mapM_ (send recipient) messages
 
 
 bigFunc :: TimeToSendMessages -> GracePeriod -> Seed -> IO ()
-bigFunc _ _ seed = do
+bigFunc timeToSendMessages  _ seed = do
   let messagesToSendOutForever = randomStream seed :: Messages
    
   Right t <- createTransport "127.0.0.1" "10501" defaultTCPParameters
@@ -54,7 +55,7 @@ bigFunc _ _ seed = do
 
     spamMessagesPid <- sendMessagesForever messagesToSendOutForever self
 
-
+    killAfter (seconds timeToSendMessages) spamMessagesPid "Time to be done" 
 
 
     send self (100 :: Int)
