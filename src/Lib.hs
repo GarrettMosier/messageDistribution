@@ -61,10 +61,10 @@ bigFunc (CommandLineRequest timeToSendMessages gracePeriod seed) = do
     killAfter (seconds timeToSendMessages) spamMessagesPid "Time to be done" 
 
 
-    send self (100 :: Int)
-    send self (20 :: Int)
-    sup <- expect :: Process Int
-    yo <- expect :: Process Int
+    -- send self (100 :: Float)
+    --send self (20 :: Float)
+    sup <- expect :: Process Float 
+    yo <- expect :: Process Float
     liftIO $ print $ suma [sup, yo]
 
 
