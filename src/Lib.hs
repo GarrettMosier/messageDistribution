@@ -30,7 +30,8 @@ randomStream seed = randomRs (0 :: Float, 1) $ mkStdGen seed
 
 
 bigFunc :: TimeToSendMessages -> GracePeriod -> Seed -> IO ()
-bigFunc _ _ _ = do
+bigFunc _ _ seed = do
+  let messagesToSendOutForever = randomStream seed
   Right t <- createTransport "127.0.0.1" "10501" defaultTCPParameters
   node <- newLocalNode t initRemoteTable
   runProcess node $ do
