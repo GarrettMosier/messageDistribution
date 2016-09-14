@@ -25,8 +25,8 @@ type TimeToSendMessages = Int
 type GracePeriod = Int
 type Seed = Int
 
-randomStream :: StdGen -> [Float]
-randomStream = randomRs (0 :: Float, 1)
+randomStream :: Seed -> [Float]
+randomStream seed = randomRs (0 :: Float, 1) $ mkStdGen seed
 
 
 bigFunc :: TimeToSendMessages -> GracePeriod -> Seed -> IO ()
