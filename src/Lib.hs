@@ -12,6 +12,8 @@ import Control.Distributed.Process
 import Control.Distributed.Process.Node
 import Network.Transport.TCP (createTransport, defaultTCPParameters)
 
+import System.Random
+
 replyBack :: (ProcessId, String) -> Process ()
 replyBack (sender, msg) = send sender msg
 
@@ -22,6 +24,10 @@ logMessage msg = say $ "handling " ++ msg
 type TimeToSendMessages = Int
 type GracePeriod = Int
 type Seed = Int
+
+randomStream :: StdGen -> [Float]
+randomStream = randomRs (0 :: Float, 1)
+
 
 bigFunc :: TimeToSendMessages -> GracePeriod -> Seed -> IO ()
 bigFunc _ _ _ = do
