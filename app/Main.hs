@@ -2,17 +2,22 @@ module Main where
 
 import Lib
 import Options.Applicative
+import Text.Read
 
 
-data CommandLineRequest = CommandLineRequest { durationToSendMessages :: String, gracePeriod :: String, seed :: String}
+
+
+getDuration (CommandLineRequest duration _ _) = duration
+getGracePeriod (CommandLineRequest _ gracePeriod _) = gracePeriod
+getSeed (CommandLineRequest _ _ seed) = seed
 
 
 commandLineParser :: Parser CommandLineRequest
 commandLineParser = CommandLineRequest <$>
-    strOption (long "send-for" <> metavar "SENDING_DURATION" <> help "How long to send messages in first part of program execution") <*>
-    strOption (long "wait-for" <> metavar "GRACE_PERIOD" <> help "How long to wait after the batch of messages was sent until calculation time.") <*> 
-    strOption (long "with-seed" <> metavar "SEED" <> help "The seed to be used in the random message generation") 
-    
+    option auto (long "send-for" <> metavar "SENDING_DURATION" <> help "How long to send messages in first part of program execution") <*>
+    option auto (long "wait-for" <> metavar "GRACE_PERIOD" <> help "How long to wait after the batch of messages was sent until calculation time.") <*> 
+    option auto (long "with-seed" <> metavar "SEED" <> help "The seed to be used in the random message generation") 
+
 
 options = info (helper <*> commandLineParser)
     ( fullDesc 
@@ -21,4 +26,4 @@ options = info (helper <*> commandLineParser)
 
 
 main :: IO ()
-main = bigFunc 1 1 1
+main = execParser options >>= bigFunc

@@ -27,6 +27,9 @@ type GracePeriod = Int
 type Seed = Int
 type Messages = [Float]
 
+
+data CommandLineRequest = CommandLineRequest { durationToSendMessages :: Int, gracePeriod :: Int, seed :: Int}
+
 randomStream :: Seed -> [Float]
 randomStream = randomRs (0 :: Float, 1) . mkStdGen 
 
@@ -39,8 +42,8 @@ sendMessages :: [Float] -> ProcessId -> Process ()
 sendMessages messages recipient = mapM_ (send recipient) messages 
 
 
-bigFunc :: TimeToSendMessages -> GracePeriod -> Seed -> IO ()
-bigFunc timeToSendMessages  _ seed = do
+bigFunc :: CommandLineRequest -> IO ()
+bigFunc (CommandLineRequest timeToSendMessages gracePeriod seed) = do
   let messagesToSendOutForever = randomStream seed :: Messages
 
   Right t <- createTransport "127.0.0.1" "10501" defaultTCPParameters
