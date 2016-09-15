@@ -29,11 +29,11 @@ randomStream :: Seed -> Messages
 randomStream = randomRs (0 :: Float, 1) . mkStdGen 
 
 
-sendMessagesForever :: Messages -> ProcessId -> Process ProcessId
-sendMessagesForever messages recipient = spawnLocal $ sendMessages messages recipient
+sendMessagesForever :: Messages -> [ProcessId] -> Process ProcessId
+sendMessagesForever messages recipients = spawnLocal $ sendMessages messages recipients
 
-sendMessages :: Messages -> ProcessId -> Process ()
-sendMessages messages recipient = mapM_ (send recipient) messages 
+sendMessages :: Messages -> [ProcessId] -> Process ()
+sendMessages messages recipients = mapM_ (\recipient -> mapM_ (send recipient) messages) recipients 
 
 
 expectMessagesUtil :: Messages -> Process Messages
@@ -46,7 +46,7 @@ expectMessages :: Process Messages
 expectMessages = expectMessagesUtil []
 
 
-serverLocations = [("127.0.0.1", "10501")]
+serverLocations = [("127.0.0.1", "10501"), ("127.0.0.1", "10503")]
 transportLocations = fmap (\(host, port) -> createTransport host port defaultTCPParameters) serverLocations
 
 bigFunc :: CommandLineRequest -> IO ()
@@ -59,7 +59,7 @@ bigFunc (CommandLineRequest timeToSendMessages gracePeriod seed) = do
 
     self <- getSelfPid
 
-    spamMessagesPid <- sendMessagesForever messagesToSendOutForever self
+    spamMessagesPid <- sendMessagesForever messagesToSendOutForever [self] 
     killAfter (seconds timeToSendMessages) spamMessagesPid "Time to be done" 
 
 
