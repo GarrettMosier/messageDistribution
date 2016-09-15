@@ -51,6 +51,7 @@ expectMessagesUtil li = do
 expectMessages :: Process Messages
 expectMessages = expectMessagesUtil []
 
+
 bigFunc :: CommandLineRequest -> IO ()
 bigFunc (CommandLineRequest timeToSendMessages gracePeriod seed) = do
   let messagesToSendOutForever = randomStream seed :: Messages
@@ -69,12 +70,17 @@ bigFunc (CommandLineRequest timeToSendMessages gracePeriod seed) = do
 
     killAfter (seconds timeToSendMessages) spamMessagesPid "Time to be done" 
 
-
+    let blah = expectMessages
+    
     -- send self (100 :: Float)
     --send self (20 :: Float)
     sup <- expect :: Process Float 
     yo <- expect :: Process Float
     liftIO $ print $ suma [sup, yo]
+    
+    let summed = fmap suma blah :: Process Float
+    stuff <- summed
+    liftIO $ print stuff--summed
 
 
 {-
