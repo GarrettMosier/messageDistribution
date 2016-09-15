@@ -69,9 +69,10 @@ bigFunc (CommandLineRequest timeToSendMessages gracePeriod seed) = do
     spamMessagesPid <- sendMessagesForever messagesToSendOutForever self
 
     killAfter (seconds timeToSendMessages) spamMessagesPid "Time to be done" 
-
+     -- TODO Make sure I don't start two process for reading messages
     let blah = expectMessages
-    
+    expectingPid <- spawnLocal $ fmap (\x -> ()) blah
+    killAfter (seconds (timeToSendMessages + gracePeriod)) expectingPid "Stop collecting messages please" 
     -- send self (100 :: Float)
     --send self (20 :: Float)
     sup <- expect :: Process Float 
