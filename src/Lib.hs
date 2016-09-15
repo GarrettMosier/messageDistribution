@@ -2,15 +2,10 @@
 module Lib where
 
 import Control.Distributed.Process
-import Control.Distributed.Process
 
 import Network.Transport.TCP (createTransport, defaultTCPParameters)
 
-import Control.Concurrent (threadDelay)
-import Control.Monad (forever)
-import Control.Distributed.Process
 import Control.Distributed.Process.Node
-import Network.Transport.TCP (createTransport, defaultTCPParameters)
 import Control.Distributed.Process.Extras.Time
 import Control.Distributed.Process.Extras.Timer
 import System.Random
@@ -34,8 +29,7 @@ randomStream :: Seed -> Messages
 randomStream = randomRs (0 :: Float, 1) . mkStdGen 
 
 
-
---sendMessagesForever :: [Float] -> IO ()
+sendMessagesForever :: Messages -> ProcessId -> Process ProcessId
 sendMessagesForever messages recipient = spawnLocal $ sendMessages messages recipient
 
 sendMessages :: Messages -> ProcessId -> Process ()
