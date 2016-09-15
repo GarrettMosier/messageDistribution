@@ -42,7 +42,7 @@ sendMessages :: Messages -> ProcessId -> Process ()
 sendMessages messages recipient = mapM_ (send recipient) messages 
 
 
-expectMessages :: [Float] -> Process [Float]
+expectMessages :: Messages -> Process Messages
 expectMessages li = do
   receivedMessage <- expect :: Process Float
   expectMessages $ li ++ [receivedMessage]
