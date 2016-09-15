@@ -46,11 +46,14 @@ expectMessages :: Process Messages
 expectMessages = expectMessagesUtil []
 
 
+serverLocations = [("127.0.0.1", "10501")]
+transportLocations = fmap (\(host, port) -> createTransport host port defaultTCPParameters) serverLocations
+
 bigFunc :: CommandLineRequest -> IO ()
 bigFunc (CommandLineRequest timeToSendMessages gracePeriod seed) = do
   let messagesToSendOutForever = randomStream seed :: Messages
 
-  Right t <- createTransport "127.0.0.1" "10501" defaultTCPParameters
+  Right t <- transportLocations !! 0 -- TODO Have it work for all values
   node <- newLocalNode t initRemoteTable
   runProcess node $ do
 
