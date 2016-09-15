@@ -59,30 +59,28 @@ bigFunc (CommandLineRequest timeToSendMessages gracePeriod seed) = do
   Right t <- createTransport "127.0.0.1" "10501" defaultTCPParameters
   node <- newLocalNode t initRemoteTable
   runProcess node $ do
-    -- Spawn another worker on the local node
-    echoPid <- spawnLocal $ forever $ do
-      -- Test our matches in order against each message in the queue
-      receiveWait [match logMessage, match replyBack]
 
     self <- getSelfPid
 
     spamMessagesPid <- sendMessagesForever messagesToSendOutForever self
-
     killAfter (seconds timeToSendMessages) spamMessagesPid "Time to be done" 
-     -- TODO Make sure I don't start two process for reading messages
+
+
+    -- TODO Make sure I don't start two process for reading messages
     let blah = expectMessages
     expectingPid <- spawnLocal $ fmap (\x -> ()) blah
     killAfter (seconds (timeToSendMessages + gracePeriod)) expectingPid "Stop collecting messages please" 
-    -- send self (100 :: Float)
-    --send self (20 :: Float)
+
+
     sup <- expect :: Process Float 
     yo <- expect :: Process Float
     liftIO $ print $ suma [sup, yo]
-    
+
+{-
     let summed = fmap suma blah :: Process Float
     stuff <- summed
     liftIO $ print stuff--summed
-
+-}
 
 {-
     -- `expectTimeout` waits for a message or times out after "delay"
