@@ -42,10 +42,14 @@ sendMessages :: Messages -> ProcessId -> Process ()
 sendMessages messages recipient = mapM_ (send recipient) messages 
 
 
-expectMessages :: Messages -> Process Messages
-expectMessages li = do
+expectMessagesUtil :: Messages -> Process Messages
+expectMessagesUtil li = do
   receivedMessage <- expect :: Process Float
-  expectMessages $ li ++ [receivedMessage]
+  expectMessagesUtil $ li ++ [receivedMessage]
+
+
+expectMessages :: Process Messages
+expectMessages = expectMessagesUtil []
 
 bigFunc :: CommandLineRequest -> IO ()
 bigFunc (CommandLineRequest timeToSendMessages gracePeriod seed) = do
