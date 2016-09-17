@@ -10,6 +10,8 @@ import Control.Distributed.Process.Extras.Time
 import Control.Distributed.Process.Extras.Timer
 import System.Random
 
+import MathUtil
+
 replyBack :: (ProcessId, String) -> Process ()
 replyBack (sender, msg) = send sender msg
 
@@ -90,10 +92,3 @@ bigFunc (CommandLineRequest timeToSendMessages gracePeriod seed) = do
     -- Without the following delay, the process sometimes exits before the messages are exchanged.
     liftIO $ threadDelay 2000000
 -}
-
-suma :: (Num a, Enum a) => [a] -> a 
-suma = weightedAverage [1..] 
-
-
-weightedAverage :: (Num a ) => [a] -> [a] -> a
-weightedAverage weights values = foldr (+) 0 $ zipWith (*) weights values 
