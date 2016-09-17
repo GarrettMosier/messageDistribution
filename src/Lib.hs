@@ -11,6 +11,7 @@ import Control.Distributed.Process.Extras.Timer
 import System.Random
 
 import MathUtil
+import MessageUtil
 
 replyBack :: (ProcessId, String) -> Process ()
 replyBack (sender, msg) = send sender msg
@@ -19,33 +20,8 @@ logMessage :: String -> Process ()
 logMessage msg = say $ "handling " ++ msg
 
 
-type TimeToSendMessages = Int
-type GracePeriod = Int
-type Seed = Int
-type Messages = [Float]
-
-
 data CommandLineRequest = CommandLineRequest { durationToSendMessages :: TimeToSendMessages, gracePeriod :: GracePeriod, seed :: Seed}
 
-randomStream :: Seed -> Messages
-randomStream = randomRs (0 :: Float, 1) . mkStdGen 
-
-
-sendMessagesForever :: Messages -> [ProcessId] -> Process ProcessId
-sendMessagesForever messages recipients = spawnLocal $ sendMessages messages recipients
-
-sendMessages :: Messages -> [ProcessId] -> Process ()
-sendMessages messages recipients = mapM_ (\recipient -> mapM_ (send recipient) messages) recipients 
-
-
-expectMessagesUtil :: Messages -> Process Messages
-expectMessagesUtil li = do
-  receivedMessage <- expect :: Process Float
-  expectMessagesUtil $ li ++ [receivedMessage]
-
-
-expectMessages :: Process Messages
-expectMessages = expectMessagesUtil []
 
 
 serverLocations = [("127.0.0.1", "10501"), ("127.0.0.1", "10503")]

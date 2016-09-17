@@ -9,6 +9,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     Lib
                      , MathUtil
+                     , MessageUtil
   build-depends:       base >= 4.7 && < 5
                      , distributed-process
                      , distributed-process-extras
