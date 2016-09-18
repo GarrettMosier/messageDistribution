@@ -9,6 +9,8 @@ import Control.Distributed.Process.Extras.Time
 import Control.Distributed.Process.Extras.Timer
 import System.Random
 
+import Control.Monad
+
 type TimeToSendMessages = Int
 type GracePeriod = Int
 type Seed = Int
@@ -27,9 +29,9 @@ sendMessages messages recipients = mapM_ (\recipient -> mapM_ (send recipient) m
 
 
 expectMessagesUtil :: Messages -> Process Messages
-expectMessagesUtil li = do
-  receivedMessage <- expect :: Process Float
-  expectMessagesUtil $ li ++ [receivedMessage]
+expectMessagesUtil li = replicateM 1000 act
+  where act = expect :: Process Float
+  --expectMessagesUtil $ li ++ [receivedMessage]
 
 
 expectMessages :: Process Messages

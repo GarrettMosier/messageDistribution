@@ -43,19 +43,20 @@ bigFunc (CommandLineRequest timeToSendMessages gracePeriod seed) = do
 
     -- TODO Make sure I don't start two process for reading messages
     let blah = expectMessages
-    expectingPid <- spawnLocal $ fmap (\x -> ()) blah
-    killAfter (seconds (timeToSendMessages + gracePeriod)) expectingPid "Stop collecting messages please" 
+    --expectingPid <- spawnLocal $ fmap (\x -> ()) blah
+    --killAfter (seconds (timeToSendMessages + gracePeriod)) expectingPid "Stop collecting messages please" 
 
 
     sup <- expect :: Process Float 
     yo <- expect :: Process Float
-    liftIO $ print $ suma [sup, yo]
+    hey <- expect :: Process Float
+    liftIO $ print $ suma [sup, yo, hey]
 
-{-
+
     let summed = fmap suma blah :: Process Float
     stuff <- summed
     liftIO $ print stuff--summed
--}
+    liftIO $ print "Done"
 
 {-
     -- `expectTimeout` waits for a message or times out after "delay"
