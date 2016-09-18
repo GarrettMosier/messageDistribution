@@ -2,11 +2,6 @@ module MessageUtil where
 
 import Control.Distributed.Process
 
-import Network.Transport.TCP (createTransport, defaultTCPParameters)
-
-import Control.Distributed.Process.Node
-import Control.Distributed.Process.Extras.Time
-import Control.Distributed.Process.Extras.Timer
 import System.Random
 
 import Control.Monad
